@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const parseToText = (value) => {
+export const parseToText = (value) => {
   if (value >= 1000) {
     return ((value/1000).toFixed(1).toString() + 'k');
   }
@@ -39,8 +39,13 @@ const parseToText = (value) => {
 }
 
 const RepositoryItem = ({repo}) => {
+
+  if (!repo) {
+    return null;
+  }
+  
   return(
-    <View style={styles.repo}>
+    <View style={styles.repo} testID="repositoryItem">
       <View style={styles.flexContainerRow}>
         <View style={styles.padding}>
           <Image style={styles.logo} source={{uri: repo.ownerAvatarUrl}}/>

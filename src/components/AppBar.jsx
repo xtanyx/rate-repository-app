@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import Text from './Text'
 import theme from '../theme';
-import { Link } from 'react-router-native';
+import { Link, useNavigate } from 'react-router-native';
 import { useQuery } from '@apollo/client';
 import {ME} from '../graphql/queries'
 import { useApolloClient } from '@apollo/client';
@@ -32,6 +32,7 @@ const AppBar = () => {
   const userResult = useQuery(ME);
   const authStorage = useAuthStorage();
   const apolloClient = useApolloClient();
+  const navigate = useNavigate();
 
   if (userResult.loading) {
     return null;
@@ -45,6 +46,7 @@ const AppBar = () => {
     console.log('working');
     await authStorage.removeAccessToken();
     apolloClient.resetStore();
+    navigate('/');
   }
 
   console.log(userResult.data.me);
@@ -58,14 +60,33 @@ const AppBar = () => {
         </Pressable>
         {
           !userResult.data.me
-            ? <Pressable style={styles.flexRepositories}>
-                <Link to='/signIn'>
-                  <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>Sign in</Text>
-                </Link>
-              </Pressable>
-            : <Pressable style={styles.flexRepositories} onPress={handleSignOut}>
+            ? <>
+                <Pressable style={styles.flexRepositories}>
+                  <Link to='/signIn'>
+                    <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>Sign in</Text>
+                  </Link>
+                </Pressable>
+                <Pressable style={styles.flexRepositories}>
+                  <Link to='/signUp'>
+                    <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>Sign up</Text>
+                  </Link>
+                </Pressable>
+              </>
+            : <>
+                <Pressable style={styles.flexRepositories}>
+                  <Link to='/createReview'>
+                    <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>Create a review</Text>
+                  </Link>
+                </Pressable>
+                <Pressable style={styles.flexRepositories}>
+                  <Link to='/myReviews'>
+                    <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>My reviews</Text>
+                  </Link>
+                </Pressable>
+                <Pressable style={styles.flexRepositories} onPress={handleSignOut}>
                   <Text color='textSecondary' fontSize='subheading' fontWeight='bold'>Sign Out</Text>
-              </Pressable>
+                </Pressable>
+              </>
         }
       </ScrollView>
     </View>
